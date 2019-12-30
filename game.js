@@ -54,7 +54,6 @@ class playGame extends Phaser.Scene{
         // this.input.on("pointerup", this.stop, this);
         this.keyEnter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         // this.input.keyboard.on('keyup_UP',this.grow, this);
-        // this.input.keyboard.on('keyup_DOWN',this.stop, this);
     }
     addPlatforms(){
         this.mainPlatform = 0;
