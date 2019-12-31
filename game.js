@@ -8,7 +8,7 @@ var gameOptions = {
     poleWidth: 8,
     growTime: 500,
     rotateTime: 500,
-    walkTime: 3,
+    walkTime: 4,
     fallTime: 500,
     scrollTime: 250
 }
@@ -17,12 +17,14 @@ const IDLE = 0;
 const WAITING = 1;
 const GROWING = 2;
 const WALKING = 3;
+var scoreText;
+var score = 0;
 
 window.onload = function() {
     var gameConfig = {
         type: Phaser.AUTO,
         width: 750,
-        height: 1000,
+        height: 800,
         scene: [playGame],
         backgroundColor: 0x0c88c7
     }
@@ -50,10 +52,8 @@ class playGame extends Phaser.Scene{
         this.addPlatforms();
         this.addPlayer();
         this.addPole();
-        // this.input.on("pointerdown", this.grow, this);
-        // this.input.on("pointerup", this.stop, this);
         this.keyEnter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
-        // this.input.keyboard.on('keyup_UP',this.grow, this);
+        scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
     }
     addPlatforms(){
         this.mainPlatform = 0;
@@ -168,6 +168,7 @@ class playGame extends Phaser.Scene{
                                         callbackScope: this,
                                         onComplete: function(){
                                             this.prepareNextMove();
+                                            nextMoveScore();
                                         }
                                     })
                                 }
@@ -184,6 +185,7 @@ class playGame extends Phaser.Scene{
             }
         }
     }
+
     platformTooLong(){
         this.walkTween = this.tweens.add({
             targets: [this.player],
@@ -249,6 +251,7 @@ class playGame extends Phaser.Scene{
     }
 
     shakeAndRestart(){
+        resetScore();
         this.cameras.main.shake(800, 0.01);
         this.time.addEvent({
             delay: 2000,
@@ -271,6 +274,7 @@ class playGame extends Phaser.Scene{
             }
             if(this.coin.visible && Phaser.Geom.Rectangle.Intersection(playerBound, coinBound).width != 0){
                 this.coin.visible = false;
+                collectStarScore();
             }
         }
 
@@ -298,4 +302,18 @@ function resize(){
         canvas.style.width = (windowHeight * gameRatio) + "px";
         canvas.style.height = windowHeight + "px";
     }
+}
+
+function collectStarScore () {
+    score += 10;
+    scoreText.setText('Score: ' + score);
+}
+
+function resetScore(){
+    score = 0;
+}
+
+function nextMoveScore () {
+    score += 5;
+    scoreText.setText('Score: ' + score);
 }
